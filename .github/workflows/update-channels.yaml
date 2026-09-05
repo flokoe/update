@@ -1,0 +1,56 @@
+name: Update channels
+
+on:
+  schedule:
+    - cron: '23 6 * * *'
+  workflow_dispatch:
+  push:
+    branches: [main]
+    paths:
+      - scripts/**
+      - .github/workflows/update-channels.yaml
+  pull_request:
+    paths:
+      - scripts/**
+      - .github/workflows/update-channels.yaml
+
+permissions:
+  contents: read
+
+concurrency:
+  group: update-channels-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+      - run: python3 -m unittest discover -s scripts -p 'test_*.py' -v
+
+  update:
+    if: github.event_name != 'pull_request'
+    needs: test
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: write
+    steps:
+      - uses: actions/checkout@11bd71901bbe5b1630ceea73d27597364c9af683 # v4.2.2
+        with:
+          ref: main
+      - name: Generate channels
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: python3 scripts/update_channels.py
+      - name: Commit changed channels
+        run: |
+          git add -A -- stable
+          if git diff --cached --quiet; then
+            echo 'Channels are already current.'
+            exit 0
+          fi
+          git config user.name 'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+          git commit -m 'chore: refresh stable k0s update channels'
+          git push origin HEAD:main

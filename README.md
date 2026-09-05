@@ -1,56 +1,62 @@
-# k0s Update Server - Reference implementation
+# Automated k0s update channels
 
-This repo serves as k0s update server reference implementation. It provides the basic channels descriptions that is expected from an update server.
+Fork of [k0sproject/update](https://github.com/k0sproject/update), refreshed daily
+at 06:23 UTC from the [k0s GitHub releases](https://github.com/k0sproject/k0s/releases).
+Run **Actions → Update channels → Run workflow** to refresh manually.
 
-## Available channels
+## Channels and retention
 
-- stable
-- stable/v1.27
-- stable/v1.28
-- stable/v1.29
+- `stable/v1.MINOR`: newest stable patch and k0s revision in that minor line.
+- `stable`: newest stable release overall; this channel can cross minor versions.
 
-## Channel "protocol"
+Only the **three newest stable k0s minor lines** are retained. This follows the
+three-minor retention model in the [Kubernetes support policy](https://kubernetes.io/releases/version-skew-policy/#supported-versions),
+using k0s release availability. It is not a claim that k0s release timing or EOL
+dates exactly match Kubernetes. When a new stable minor appears, the oldest
+minor channel is deleted, so clients on it must deliberately migrate to a
+supported minor. A retired channel returns 404; it never redirects to a newer minor.
+Drafts and prereleases are excluded. Versions sort numerically, including the
+`+k0s.N` revision, independently of publication order.
 
+## Use with Autopilot
 
-When autopilot is configred to use a channel called `some-channel`, it will request the information from following URL `<update-server-address/<channel>/index.yaml`
-Essentially k0s autopilot assumes the folowing structure for update channels:
-
-```text
-<channel-name>/
-    index.yaml
-```
-
-Each the channel name can contain e.g. forward slashes so you can structure the channels for example like so:
-
-```text
-stable/v1.28/
-    index.yaml
-unstable/v1.28/
-    index.yaml
-```
-
-Each channel `index.yaml` need to provide following information:
+For patch-only updates, select your installed minor explicitly:
 
 ```yaml
-channel: v1.27
-eolDate: "2024-06-28"
-version: 1.27.8+k0s.0
-downloadURLs:
-- arch: amd64
-  os: linux
-  k0s: https://github.com/k0sproject/k0s/releases/download/v1.27.0%2Bk0s.0/k0s-v1.27.0+k0s.0-amd64
-  k0sSha256: deadbeef
-  airgapBundle: someurlhere
-  airgapSha256: deadbeef
-- arch: arm64
-  os: linux
-  url: https://github.com/k0sproject/k0s/releases/download/v1.27.0%2Bk0s.0/k0s-v1.27.0+k0s.0-arm64
-- arch: arm
-  os: linux
-  url: https://github.com/k0sproject/k0s/releases/download/v1.27.0%2Bk0s.0/k0s-v1.27.0+k0s.0-arm
-- arch: amd64
-  os: windows
-  url: https://github.com/k0sproject/k0s/releases/download/v1.27.0%2Bk0s.0/k0s-v1.27.0+k0s.0-amd64.exe
+apiVersion: autopilot.k0sproject.io/v1beta2
+kind: UpdateConfig
+metadata:
+  name: k0s-patch-updates
+spec:
+  updateServer: https://raw.githubusercontent.com/flokoe/update/main/
+  channel: stable/v1.36
+  upgradeStrategy:
+    type: periodic
+    periodic:
+      days: [Sunday]
+      startTime: "04:00"
+      length: 2h
 ```
 
-So each channel can offer only single version to k0s autopilot client. In general the design pattern here is that each major.minor version will have their own channel where the latest patch release is offered.
+The example window uses the k0s process's local timezone. Choose your own window.
+No Pages setup or custom domain is required. Autopilot fetches
+`<updateServer>/<channel>/index.yaml`; binaries and airgap bundles download directly
+from upstream GitHub releases. Linux amd64, arm64, and arm are included.
+
+## Generation and validation
+
+The Python standard-library generator paginates the releases API and validates
+all three selected releases before writing any feeds. Binary and airgap checksums
+come from the exact filename in `sha256sums.txt`; GitHub asset digests must agree
+when present. Missing assets, checksums, or mismatches fail the workflow without
+publishing partial updates. The next scheduled run retries. The workflow commits
+only changed channel files using its built-in token; no extra secrets are required.
+
+```sh
+python3 -m unittest discover -s scripts -p 'test_*.py' -v
+GH_TOKEN="$(gh auth token)" python3 scripts/update_channels.py
+```
+
+Fork workflows must be enabled. GitHub may disable scheduled workflows after
+60 days of repository inactivity; monitor Actions and re-enable if necessary.
+The inherited `latest`, `unstable`, and upstream `CNAME` are intentionally removed.
