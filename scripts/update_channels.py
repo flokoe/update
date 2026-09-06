@@ -82,7 +82,8 @@ def channel(release, download=fetch):
             raise ValueError(f"Unexpected asset URL: {url}")
         return url, digest
 
-    lines = [f"channel: {name}", f"version: {tag[1:]}", "downloadURLs:"]
+    # Autopilot compares this string exactly with the running k0s version.
+    lines = [f"channel: {name}", f"version: {tag}", "downloadURLs:"]
     for arch in ARCHES:
         url, digest = payload(f"k0s-{tag}-{arch}")
         lines.extend([f"- arch: {arch}", "  os: linux", f"  k0s: {url}", f"  k0sSha256: {digest}"])

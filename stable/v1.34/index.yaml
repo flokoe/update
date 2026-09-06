@@ -1,5 +1,5 @@
 channel: v1.34
-version: 1.34.11+k0s.0
+version: v1.34.11+k0s.0
 downloadURLs:
 - arch: amd64
   os: linux

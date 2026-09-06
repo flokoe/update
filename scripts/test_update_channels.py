@@ -24,6 +24,14 @@ def sums(items):
 
 
 class ChannelsTest(unittest.TestCase):
+    def test_version_matches_running_k0s_for_autopilot_completion(self):
+        item = release("v1.36.4+k0s.0")
+        _, content = update.channel(item, lambda _: sums([item]))
+        reported_version = "v1.36.4+k0s.0"
+        feed_version = next(line.removeprefix("version: ")
+                            for line in content.splitlines() if line.startswith("version: "))
+        self.assertEqual(feed_version, reported_version)
+
     def test_numeric_selection_and_stable_filter(self):
         tags = ["v1.9.9+k0s.0", "v1.34.9+k0s.0", "v1.35.10+k0s.2",
                 "v1.35.10+k0s.10", "v1.35.9+k0s.20", "v1.36.0+k0s.0"]
