@@ -1,21 +1,21 @@
 channel: v1.36
-version: v1.36.4+k0s.0
+version: v1.36.4+k0s.1
 downloadURLs:
 - arch: amd64
   os: linux
-  k0s: https://github.com/k0sproject/k0s/releases/download/v1.36.4%2Bk0s.0/k0s-v1.36.4%2Bk0s.0-amd64
-  k0sSha256: ca1e9e68107335846e8296777fce2ccd654284e6265b4b5d32c34ead872af98f
-  airgapBundle: https://github.com/k0sproject/k0s/releases/download/v1.36.4%2Bk0s.0/k0s-airgap-bundle-v1.36.4%2Bk0s.0-linux-amd64.tar
-  airgapSha256: 23746c2d4f2fdbfe353f5c9f81b5567e8904fa354fb2de5bf4efd6742f302415
+  k0s: https://github.com/k0sproject/k0s/releases/download/v1.36.4%2Bk0s.1/k0s-v1.36.4%2Bk0s.1-amd64
+  k0sSha256: 18c304d53cdd70095e99c6b859b269b4fef0bb84579d7e7185271a9135694a31
+  airgapBundle: https://github.com/k0sproject/k0s/releases/download/v1.36.4%2Bk0s.1/k0s-airgap-bundle-v1.36.4%2Bk0s.1-linux-amd64.tar
+  airgapSha256: c9195e7ed8343df5f7cfa306c74034087c958030e1c71940b220d93d1c925d71
 - arch: arm64
   os: linux
-  k0s: https://github.com/k0sproject/k0s/releases/download/v1.36.4%2Bk0s.0/k0s-v1.36.4%2Bk0s.0-arm64
-  k0sSha256: 6301f64d98f9e4f6fbc2892bc66d137bb4ad5840685300772d8391614d47b8aa
-  airgapBundle: https://github.com/k0sproject/k0s/releases/download/v1.36.4%2Bk0s.0/k0s-airgap-bundle-v1.36.4%2Bk0s.0-linux-arm64.tar
-  airgapSha256: e9f96d0f57c8b3dc446bafc65a38c0c6b0c9d5ffff108bf6980d996b30a50227
+  k0s: https://github.com/k0sproject/k0s/releases/download/v1.36.4%2Bk0s.1/k0s-v1.36.4%2Bk0s.1-arm64
+  k0sSha256: 04f685c8c9c29262da64acf26fd928452f19d449ac58729592f686f915882319
+  airgapBundle: https://github.com/k0sproject/k0s/releases/download/v1.36.4%2Bk0s.1/k0s-airgap-bundle-v1.36.4%2Bk0s.1-linux-arm64.tar
+  airgapSha256: be2420f3da562c383b98879e3503483c00bb77763a4c2443ba3636f0c25a6f03
 - arch: arm
   os: linux
-  k0s: https://github.com/k0sproject/k0s/releases/download/v1.36.4%2Bk0s.0/k0s-v1.36.4%2Bk0s.0-arm
-  k0sSha256: cf7c35e6c1952c7a15ad0cb1bb889dc62c46a18c4803a11dd728229092a4eca5
-  airgapBundle: https://github.com/k0sproject/k0s/releases/download/v1.36.4%2Bk0s.0/k0s-airgap-bundle-v1.36.4%2Bk0s.0-linux-arm.tar
-  airgapSha256: e6472ce7177cbb1ef39f73df38139c0d23ce898bea2854d56b397be272b0dd0f
+  k0s: https://github.com/k0sproject/k0s/releases/download/v1.36.4%2Bk0s.1/k0s-v1.36.4%2Bk0s.1-arm
+  k0sSha256: 63867c2575a8fd7460c595e1edfc14c6ddf0615fccad2a5234fce0b074582aa4
+  airgapBundle: https://github.com/k0sproject/k0s/releases/download/v1.36.4%2Bk0s.1/k0s-airgap-bundle-v1.36.4%2Bk0s.1-linux-arm.tar
+  airgapSha256: 66a3cab6d377b3814dc4e303bff55e33fdb5662435189ae1f49a333944024bbd
